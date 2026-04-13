@@ -12,11 +12,32 @@ async function startBot() {
   })
 
   // 🔥 Pairing Code
-  if (!sock.authState.creds.registered) {
-    const phoneNumber = "2349126367578" // 👉 PUT YOUR NUMBER HERE
-    const code = await sock.requestPairingCode(phoneNumber)
-    console.log(`\n🔥 NyxCore Pairing Code: ${code}\n`)
+  sock.ev.on('connection.update', async (update) => {
+  const { connection, lastDisconnect, qr } = update
+
+  if (connection === 'connecting') {
+    console.log('⏳ Connecting to WhatsApp...')
   }
+
+  if (connection === 'open') {
+    console.log('✅ NyxCore Connected Successfully!')
+  }
+
+  if (connection === 'close') {
+    const shouldReconnect =
+      lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut
+    if (shouldReconnect) startBot()
+  }
+
+  // 🔥 FIXED PAIRING CODE (delay)
+  if (!sock.authState.creds.registered && connection === 'connecting') {
+    const phoneNumber = "234XXXXXXXXXX" // 👉 your number
+    setTimeout(async () => {
+      const code = await sock.requestPairingCode(phoneNumber)
+      console.log(`\n🔥 NyxCore Pairing Code: ${code}\n`)
+    }, 4000)
+  }
+})
 
   sock.ev.on('connection.update', (update) => {
     const { connection, lastDisconnect, qr } = update
