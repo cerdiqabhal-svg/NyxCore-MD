@@ -13,7 +13,7 @@ async function startBot() {
 
   // 🔥 Pairing Code
   if (!sock.authState.creds.registered) {
-    const phoneNumber = "234XXXXXXXXXX" // 👉 PUT YOUR NUMBER HERE
+    const phoneNumber = "2349126367578" // 👉 PUT YOUR NUMBER HERE
     const code = await sock.requestPairingCode(phoneNumber)
     console.log(`\n🔥 NyxCore Pairing Code: ${code}\n`)
   }
